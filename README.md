@@ -7,7 +7,7 @@
 PharmaFormer is a **Transformer-based deep learning model** designed to predict clinical drug responses by integrating gene expression profiles and drug molecular structures. This model combines patient-derived tumor organoid data with large-scale cell line pharmacogenomic datasets, leveraging a transfer learning approach to improve prediction accuracy.
 
 <p align="center">
-  <img src="PharmaFormer_architecture.jpg" alt="PharmaFormer Architecture" width="500"/>
+  <img src="Schematic of the PharmaFormer model.jpg" alt="PharmaFormer Architecture" width="500"/>
 </p>
 
 ## Key Features
