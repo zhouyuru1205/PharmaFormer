@@ -12,9 +12,9 @@ PharmaFormer is a **Transformer-based deep learning model** designed to predict 
 
 ## Key Features
 
-1. **Transfer Learning from Cell Lines to Organoids**: PharmaFormer uses a pre-trained model built on extensive cell line data (87,596 cell line-drug pairs) from the GDSC2 dataset, fine-tuned with organoid-specific data to achieve high predictive fidelity for patient drug responses.
-2. **Importance of Organoid Data**: Organoids are known for accurately reflecting clinical drug responses due to their biomimetic characteristics. Our study underscores the value of incorporating organoid data to enhance prediction models.
-3. **Superior Predictive Capabilities**: PharmaFormer demonstrates improved prediction accuracy, especially for clinical tumor drug response prediction.
+1. **Seamless Transfer Learning**: PharmaFormer leverages a pre-trained model developed on extensive cell line data (87,596 cell line-drug pairs) from the GDSC2 dataset and fine-tunes it with organoid-specific data, enhancing its ability to predict patient drug responses with high accuracy.
+2. **Leveraging Organoid Insights**: By utilizing the biomimetic fidelity of organoids, which closely mirror clinical drug responses, PharmaFormer highlights the critical role of organoid data in advancing drug response prediction models.
+3. **Enhanced Predictive Performance**: PharmaFormer excels in predicting drug responses, particularly for clinical tumor patients, providing robust and accurate predictions that support personalized oncology and precision medicine efforts.
 
 ## Installation
 
