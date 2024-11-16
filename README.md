@@ -19,7 +19,7 @@ PharmaFormer is a **Transformer-based deep learning model** designed to predict 
 ## Installation
 
 ```bash
-git clone https://github.com/yourusername/PharmaFormer.git
+git clone https://github.com/zhouyuru1205/PharmaFormer.git
 cd PharmaFormer
 pip install -r requirements.txt
 
