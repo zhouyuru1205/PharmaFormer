@@ -22,4 +22,14 @@ PharmaFormer is a **Transformer-based deep learning model** designed to predict 
 git clone https://github.com/zhouyuru1205/PharmaFormer.git
 cd PharmaFormer
 pip install -r requirements.txt
+```
 
+### Note on SMILES Encoding Architecture
+
+The manuscript describes the drug SMILES inputs as "encoded using a BPE strategy." For clarity regarding the specific implementation in this repository:
+
+* **Segmentation:** BPE (`subword_nmt`) is applied to segment SMILES strings into substructures.
+* **Encoding:** The resulting segmented string is converted into a fixed-length numerical vector using character-level ASCII values (`ord(char)`).
+* **Projection:** This vector is processed via a **Linear projection layer** (rather than a lookup-based embedding layer). This approach functions as a lightweight **numerical representation** tailored to the dataset size.
+
+*Note: While this architecture uses an ASCII-based mapping distinct from standard NLP token-indexing, our empirical experiments confirm that this heuristic design learns effective representations for this specific pharmacogenomic task.*
