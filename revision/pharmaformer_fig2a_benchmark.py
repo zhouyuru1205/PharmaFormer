@@ -88,7 +88,7 @@ class CombinedModel(nn.Module):
         output = self.transformer(features)
         return output
 
-def prepare_data(x_gene, x_drug, y, batch_size=batch_size, seed=seed):
+def prepare_data(x_gene, x_drug, y, batch_size=batch_size, seed=seed, shuffle=True):
     def worker_init_fn(worker_id):
         np.random.seed(seed)
         random.seed(seed)
@@ -107,7 +107,7 @@ def prepare_data(x_gene, x_drug, y, batch_size=batch_size, seed=seed):
     dataloader = torch.utils.data.DataLoader(
         dataset,
         batch_size=batch_size,
-        shuffle=True,
+        shuffle=shuffle,
         worker_init_fn=worker_init_fn
     )
     return dataloader
@@ -209,9 +209,9 @@ def evaluate_per_drug_correlation(all_outputs, all_targets, drug_names):
     }
 
 def train_and_evaluate_kfold(x_gene, x_smiles, y, drug_names, cell_lines, tcga_types, k=5, epochs=10, lr=lr, batch_size=batch_size):
-    from sklearn.model_selection import GroupKFold
+    from sklearn.model_selection import KFold
     
-    gkf = GroupKFold(n_splits=k)
+    kf = KFold(n_splits=k, shuffle=True, random_state=seed)
     models = []
     val_losses = []
     fold_results = []
@@ -219,9 +219,9 @@ def train_and_evaluate_kfold(x_gene, x_smiles, y, drug_names, cell_lines, tcga_t
     print(f"Total samples: {len(x_gene)}")
     print(f"Unique cell lines: {len(cell_lines.unique())}")
     print(f"Unique drugs: {len(drug_names.unique())}")
-    print(f"Using GroupKFold with {k} splits based on cell lines")
+    print(f"Using KFold with {k} splits")
 
-    for fold, (train_index, val_index) in enumerate(gkf.split(x_gene, y, groups=cell_lines)):
+    for fold, (train_index, val_index) in enumerate(kf.split(x_gene)):
         print(f"Fold {fold + 1}/{k}")
         
         x_gene_train, x_gene_val = x_gene.iloc[train_index], x_gene.iloc[val_index]
@@ -237,10 +237,7 @@ def train_and_evaluate_kfold(x_gene, x_smiles, y, drug_names, cell_lines, tcga_t
         train_cell_set = set(cell_lines_train.unique())
         val_cell_set = set(cell_lines_val.unique())
         overlap = train_cell_set.intersection(val_cell_set)
-        if len(overlap) > 0:
-            print(f"WARNING: Found overlapping cell lines: {overlap}")
-        else:
-            print("No cell line overlap between train and validation sets")
+        print(f"Cell line overlap between train and validation: {len(overlap)} cell lines")
 
         standard_scaler = StandardScaler()
         x_gene_train_standardized = pd.DataFrame(
@@ -281,8 +278,8 @@ def train_and_evaluate_kfold(x_gene, x_smiles, y, drug_names, cell_lines, tcga_t
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=lr)
 
-        train_loader = prepare_data(x_gene_train, x_smiles_train, y_train, batch_size, seed=seed)
-        val_loader = prepare_data(x_gene_val, x_smiles_val, y_val, batch_size, seed=seed)
+        train_loader = prepare_data(x_gene_train, x_smiles_train, y_train, batch_size, seed=seed, shuffle=True)
+        val_loader = prepare_data(x_gene_val, x_smiles_val, y_val, batch_size, seed=seed, shuffle=False)
 
         for epoch in range(epochs):
             model.train()

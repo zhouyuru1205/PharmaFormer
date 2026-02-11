@@ -1,5 +1,5 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"  
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"  
 import pandas as pd
 import numpy as np
 import random
@@ -279,7 +279,6 @@ def train_and_evaluate_fold(model_name, X, y, drug_names, n_gene_features,
         from sklearn.svm import SVR
         from sklearn.linear_model import Ridge
         from sklearn.neighbors import KNeighborsRegressor
-        from sklearn.neural_network import MLPRegressor
 
         if model_name == 'RandomForest':
             model = RandomForestRegressor(random_state=seed, n_estimators=50, n_jobs=1)
@@ -290,7 +289,8 @@ def train_and_evaluate_fold(model_name, X, y, drug_names, n_gene_features,
         elif model_name == 'KNN':
             model = KNeighborsRegressor(n_neighbors=3, n_jobs=1)
         elif model_name == 'MLP':
-            model = MLPRegressor(hidden_layer_sizes=(500,), max_iter=100, random_state=seed)
+            model = PyTorchMLPRegressor(input_size=X.shape[1], hidden_size=100, output_size=1,
+                                        lr=0.001, epochs=100, batch_size=32, device=device_id)
         else:
             raise ValueError(f"Unknown model: {model_name}")
 
