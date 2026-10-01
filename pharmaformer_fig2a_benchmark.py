@@ -88,7 +88,7 @@ class CombinedModel(nn.Module):
         output = self.transformer(features)
         return output
 
-def prepare_data(x_gene, x_drug, y, batch_size=batch_size, seed=seed):
+def prepare_data(x_gene, x_drug, y, batch_size=batch_size, seed=seed, shuffle=True):
     def worker_init_fn(worker_id):
         np.random.seed(seed)
         random.seed(seed)
@@ -107,7 +107,7 @@ def prepare_data(x_gene, x_drug, y, batch_size=batch_size, seed=seed):
     dataloader = torch.utils.data.DataLoader(
         dataset,
         batch_size=batch_size,
-        shuffle=True,
+        shuffle=shuffle,
         worker_init_fn=worker_init_fn
     )
     return dataloader
@@ -261,8 +261,8 @@ def train_and_evaluate_kfold(x_gene, x_smiles, y, drug_names, cell_lines, tcga_t
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=lr)
 
-        train_loader = prepare_data(x_gene_train, x_smiles_train, y_train, batch_size, seed=seed)
-        val_loader = prepare_data(x_gene_val, x_smiles_val, y_val, batch_size, seed=seed)
+        train_loader = prepare_data(x_gene_train, x_smiles_train, y_train, batch_size, seed=seed, shuffle=True)
+        val_loader = prepare_data(x_gene_val, x_smiles_val, y_val, batch_size, seed=seed, shuffle=False)
 
         for epoch in range(epochs):
             model.train()
